@@ -1,179 +1,184 @@
-/* eslint-disable no-unused-vars, no-use-before-define */
 import {
-  GraphQLBoolean,
   GraphQLFloat,
-  GraphQLID,
-  GraphQLInt,
   GraphQLList,
-  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString
 } from 'graphql';
-
 import {
-  connectionArgs,
-  connectionDefinitions,
-  connectionFromArray,
   fromGlobalId,
-  globalIdField,
-  mutationWithClientMutationId,
   nodeDefinitions,
-  cursorForObjectInConnection
 } from 'graphql-relay';
-
 import {
-  User,
-  Feature,
-  getUser,
-  getFeature,
-  getFeatures,
-  addFeature
+  Customer,
+  Shipment,
+  getCustomer,
+  getShipment,
+  getShipments,
+  getTrackingEvents
 } from './database';
 
-
-/**
- * We get the node interface and field from the Relay library.
- *
- * The first method defines the way we resolve an ID to its object.
- * The second defines the way we resolve an object to its GraphQL type.
- */
-const { nodeInterface, nodeField } = nodeDefinitions(
-  (globalId) => {
-    const { type, id } = fromGlobalId(globalId);
-    if (type === 'User') {
-      return getUser(id);
-    } else if (type === 'Feature') {
-      return getFeature(id);
-    }
-    return null;
-  },
-  (obj) => {
-    if (obj instanceof User) {
-      return userType;
-    } else if (obj instanceof Feature) {
-      return featureType;
-    }
-    return null;
-  }
-);
-
-/**
- * Define your own types here
- */
-
-const userType = new GraphQLObjectType({
-  name: 'User',
-  description: 'A person who uses our app',
+const customerType = new GraphQLObjectType({
+  name: 'Customer',
+  description: 'A customer whose containers we are transporting',
   fields: () => ({
-    id: globalIdField('User'),
-    features: {
-      type: featureConnection,
-      description: 'Features that I have',
-      args: connectionArgs,
-      resolve: (_, args) => connectionFromArray(getFeatures(), args)
-    },
-    username: {
+    id: {
       type: GraphQLString,
-      description: 'Users\'s username'
+      resolve: item => item._id
     },
-    website: {
-      type: GraphQLString,
-      description: 'User\'s website'
-    }
-  }),
-  interfaces: [nodeInterface]
-});
-
-const featureType = new GraphQLObjectType({
-  name: 'Feature',
-  description: 'Feature integrated in our starter kit',
-  fields: () => ({
-    id: globalIdField('Feature'),
     name: {
       type: GraphQLString,
-      description: 'Name of the feature'
+      description: 'Full name of the customer',
+      resolve: item => `${item.first_name} ${item.last_name}`
     },
-    description: {
+    company: {
       type: GraphQLString,
-      description: 'Description of the feature'
-    },
-    url: {
-      type: GraphQLString,
-      description: 'Url of the feature'
-    }
-  }),
-  interfaces: [nodeInterface]
-});
-
-/**
- * Define your own connection types here
- */
-const { connectionType: featureConnection, edgeType: featureEdge } = connectionDefinitions({ name: 'Feature', nodeType: featureType });
-
-/**
- * Create feature example
- */
-
-const addFeatureMutation = mutationWithClientMutationId({
-  name: 'AddFeature',
-  inputFields: {
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    description: { type: new GraphQLNonNull(GraphQLString) },
-    url: { type: new GraphQLNonNull(GraphQLString) },
-  },
-
-  outputFields: {
-    featureEdge: {
-      type: featureEdge,
-      resolve: (obj) => {
-        const cursorId = cursorForObjectInConnection(getFeatures(), obj);
-        return { node: obj, cursor: cursorId };
-      }
-    },
-    viewer: {
-      type: userType,
-      resolve: () => getUser(1)
-    }
-  },
-
-  mutateAndGetPayload: ({ name, description, url }) => addFeature(name, description, url)
-});
-
-
-/**
- * This is the type that will be the root of our query,
- * and the entry point into our schema.
- */
-const queryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: () => ({
-    node: nodeField,
-    // Add your own root fields here
-    viewer: {
-      type: userType,
-      resolve: () => getUser(1)
+      description: 'Company name of the customer',
+      resolve: item => item.companyName
     }
   })
 });
 
-/**
- * This is the type that will be the root of our mutations,
- * and the entry point into performing writes in our schema.
- */
-const mutationType = new GraphQLObjectType({
-  name: 'Mutation',
+const containerType = new GraphQLObjectType({
+  name: 'Container',
+  description: 'A container going as part of shipment',
   fields: () => ({
-    addFeature: addFeatureMutation
-    // Add your own mutations here
+    type: {
+      type: GraphQLString,
+      description: 'Type of the container'
+    },
+    number: {
+      type: GraphQLString,
+      description: 'Container number',
+      resolve: item => item.containerNumber
+    }
   })
 });
 
-/**
- * Finally, we construct our schema (whose starting query type is the query
- * type we defined above) and export it.
- */
+const locationType = new GraphQLObjectType({
+  name: 'Location',
+  description: 'Location represented by latitude and longitude',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Human-friendly name of the location'
+    },
+    latitude: {
+      type: GraphQLFloat,
+      description: 'Latitude of a tracking event'
+    },
+    longitude: {
+      type: GraphQLFloat,
+      description: 'Longitude of a tracking event'
+    }
+  })
+});
+
+const routePointType = new GraphQLObjectType({
+  name: 'RoutePoint',
+  description: 'Conjunction of point and time and location, point of a route',
+  fields: () => ({
+    date: {
+      type: GraphQLString,
+      description: 'Point in time',
+      resolve: item => item.createdAt
+    },
+    latitude: {
+      type: GraphQLFloat,
+      resolve: item => item.location.coordinates[0]
+    },
+    longitude: {
+      type: GraphQLFloat,
+      resolve: item => item.location.coordinates[1]
+    }
+  })
+});
+
+const shipmentType = new GraphQLObjectType({
+  name: 'Shipment',
+  description: 'An actual shipment that consists of one or many containers',
+  fields: () => ({
+    id: {
+      type: GraphQLString,
+      resolve: item => item._id
+    },
+    containers: {
+      type: new GraphQLList(containerType),
+      resolve: item => item.containers
+    },
+    customer: {
+      type: customerType,
+      description: 'Customer who ordered this container',
+      resolve: item => getCustomer(item.customer_id)
+    },
+    origin: {
+      type: locationType,
+      description: 'Location of shipment origin',
+      resolve: item => ({
+        latitude: item.origin.location.coordinates[0],
+        longitude: item.origin.location.coordinates[1]
+      })
+    },
+    destination: {
+      type: locationType,
+      description: 'Location of shipment destination',
+      resolve: item => ({
+        latitude: item.destination.location.coordinates[0],
+        longitude: item.destination.location.coordinates[1]
+      })
+    },
+    route: {
+      type: new GraphQLList(routePointType),
+      resolve: item => getTrackingEvents(item._id)
+    }
+  })
+});
+
+const shipmentsType = new GraphQLObjectType({
+  name: 'Shipments',
+  description: 'A shipment with its route represented by tracking events',
+  fields: () => ({
+    shipments: {
+      type: new GraphQLList(shipmentType),
+      resolve: () => getShipments()
+    }
+  })
+});
+
+const definitions = nodeDefinitions((globalId) => {
+  const {
+    type,
+    id
+  } = fromGlobalId(globalId);
+
+  if (type === 'Customer') {
+    return getCustomer(id);
+  } else if (type === 'Shipment') {
+    return getShipment(id);
+  } else if (type === 'Shipments') {
+    return getShipments();
+  }
+
+  return null;
+}, (obj) => {
+  if (obj instanceof Customer) {
+    return customerType;
+  } else if (obj instanceof Shipment) {
+    return shipmentType;
+  }
+
+  return null;
+});
+
 export default new GraphQLSchema({
-  query: queryType,
-  mutation: mutationType
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: () => ({
+      node: definitions.nodeField,
+      viewer: {
+        type: shipmentsType,
+        resolve: () => getShipments()
+      }
+    })
+  })
 });

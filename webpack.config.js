@@ -5,7 +5,6 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 let appEntry;
 let devtool;
@@ -17,7 +16,6 @@ const htmlTemplate = new HtmlWebpackPlugin({
   mobile: true,
   inject: false
 });
-const favIcon = new FaviconsWebpackPlugin('./client/assets/logo.png');
 
 if (process.env.NODE_ENV === 'production') {
   appEntry = [path.join(__dirname, 'client/index.js')];
@@ -37,8 +35,7 @@ if (process.env.NODE_ENV === 'production') {
         screw_ie8: true
       }
     }),
-    htmlTemplate,
-    favIcon
+    htmlTemplate
   ];
 } else {
   appEntry = [
@@ -54,8 +51,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.DefinePlugin({
       __DEV__: true
     }),
-    htmlTemplate,
-    favIcon
+    htmlTemplate
   ];
 }
 
@@ -74,6 +70,10 @@ module.exports = {
     loaders: [{
       test: /\.jsx?$/,
       loader: 'babel-loader',
+      exclude: /node_modules/
+    }, {
+      test: /\.json$/,
+      loader: 'json-loader',
       exclude: /node_modules/
     }, {
       test: /\.css$/,

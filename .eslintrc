@@ -1,21 +1,119 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
-  "env": {
-    "browser": true,
-    "node": true
-  },
   "rules": {
-    "comma-dangle": 0,
-    "max-len": 0,
-    "jsx-quotes": [2, "prefer-single"],
-    "generator-star-spacing": 0,
-    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-    "import/no-dynamic-require": 0,
-    "class-methods-use-this": 0,
-    "react/jsx-no-bind": 0,
+    "brace-style": [2, "1tbs", {
+      "allowSingleLine": false
+    }],
+    "consistent-return": 2,
+    "curly": [2, "all"],
+    "eqeqeq": 2,
+    "generator-star-spacing": [1, {
+      "before": false,
+      "after": true
+    }],
+    "indent": [2, 2],
+    "key-spacing": [2, {
+      "beforeColon": false,
+      "afterColon": true,
+      "mode": "strict"
+    }],
+    "keyword-spacing": [2, {
+      "before": true,
+      "after": true,
+      "overrides": {}
+    }],
+    "linebreak-style": [2, "unix"],
+    "object-curly-spacing": [2, "never"],
+    "object-property-newline": [2, {
+      "allowMultiplePropertiesPerLine": false
+    }],
+    "quotes": [2, "single"],
+    "semi": [2, "always"],
+    "space-before-function-paren": [2, {
+      "anonymous": "always",
+      "named": "never"
+    }],
+    "strict": 0,
+    "template-curly-spacing": [2, "never"],
+    "vars-on-top": 2,
+    "yield-star-spacing": [2, {
+      "before": false,
+      "after": true
+    }],
+    "no-array-constructor": 2,
+    "no-extend-native": 2,
+    "no-lone-blocks": 2,
+    "no-native-reassign": 2,
+    "no-new-object": 2,
+    "no-new-wrappers": 2,
+    "no-octal": 2,
+    "no-octal-escape": 2,
+    "no-proto": 2,
+    "no-param-reassign": 2,
+    "no-return-assign": 2,
+    "no-sequences": 2,
+    "no-trailing-spaces": [2, {
+      "skipBlankLines": true
+    }],
+    "no-undef": 2,
+    "no-undef-init": 2,
+    "no-undefined": 2,
+    "no-unused-vars": 2,
+    "no-void": 2,
+    "no-with": 2,
+    "babel/object-curly-spacing": 1,
+    "import/no-unresolved": [2, {
+      "commonjs": true
+    }],
+    "react/jsx-closing-bracket-location": [1, "after-props"],
+    "react/jsx-curly-spacing": [2, "never", {
+      "allowMultiline": false
+    }],
+    "react/jsx-equals-spacing": [2, "never"],
+    "react/jsx-handler-names": [1, {
+      "eventHandlerPrefix": "handle",
+      "eventHandlerPropPrefix": "on"
+    }],
+    "react/jsx-indent": [2, 2],
+    "react/jsx-indent-props": [2, 2],
+    "react/jsx-key": 1,
+    "react/jsx-no-duplicate-props": [2, {
+      "ignoreCase": true
+    }],
+    "react/jsx-no-literals": 0,
+    "react/jsx-no-undef": 2,
+    "react/jsx-pascal-case": 2,
+    "react/jsx-space-before-closing": [2, "always"],
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "react/no-did-mount-set-state": 0,
+    "react/no-did-update-set-state": 1,
+    "react/no-direct-mutation-state": 2,
+    "react/no-is-mounted": 2,
+    "react/no-multi-comp": [1, {
+      "ignoreStateless": true
+    }],
     "react/prefer-stateless-function": 0,
-    "react/jsx-filename-extension": 0,
-    "react/forbid-prop-types": 0
-  }
+    "react/self-closing-comp": 1,
+    "react/wrap-multilines": 1
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "forOf": true,
+    "generators": false,
+    "modules": true,
+    "spread": true,
+    "templateStrings": true,
+    "jsx": true
+  },
+  "plugins": ["babel", "import", "react"]
 }

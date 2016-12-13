@@ -1,51 +1,33 @@
-input AddFeatureInput {
-  name: String!
-  description: String!
-  url: String!
-  clientMutationId: String
+# A container going as part of shipment
+type Container {
+  # Type of the container
+  type: String
+
+  # Container number
+  number: String
 }
 
-type AddFeaturePayload {
-  featureEdge: FeatureEdge
-  viewer: User
-  clientMutationId: String
-}
+# A customer whose containers we are transporting
+type Customer {
+  id: String
 
-# Feature integrated in our starter kit
-type Feature implements Node {
-  # The ID of an object
-  id: ID!
-
-  # Name of the feature
+  # Full name of the customer
   name: String
 
-  # Description of the feature
-  description: String
-
-  # Url of the feature
-  url: String
+  # Company name of the customer
+  company: String
 }
 
-# A connection to a list of items.
-type FeatureConnection {
-  # Information to aid in pagination.
-  pageInfo: PageInfo!
+# Location represented by latitude and longitude
+type Location {
+  # Human-friendly name of the location
+  name: String
 
-  # A list of edges.
-  edges: [FeatureEdge]
-}
+  # Latitude of a tracking event
+  latitude: Float
 
-# An edge in a connection.
-type FeatureEdge {
-  # The item at the end of the edge
-  node: Feature
-
-  # A cursor for use in pagination
-  cursor: String!
-}
-
-type Mutation {
-  addFeature(input: AddFeatureInput!): AddFeaturePayload
+  # Longitude of a tracking event
+  longitude: Float
 }
 
 # An object with an ID
@@ -54,41 +36,40 @@ interface Node {
   id: ID!
 }
 
-# Information about pagination in a connection.
-type PageInfo {
-  # When paginating forwards, are there more items?
-  hasNextPage: Boolean!
-
-  # When paginating backwards, are there more items?
-  hasPreviousPage: Boolean!
-
-  # When paginating backwards, the cursor to continue.
-  startCursor: String
-
-  # When paginating forwards, the cursor to continue.
-  endCursor: String
-}
-
 type Query {
   # Fetches an object given its ID
   node(
     # The ID of an object
     id: ID!
   ): Node
-  viewer: User
+  viewer: Shipments
 }
 
-# A person who uses our app
-type User implements Node {
-  # The ID of an object
-  id: ID!
+# Conjunction of point and time and location, point of a route
+type RoutePoint {
+  # Point in time
+  date: String
+  latitude: Float
+  longitude: Float
+}
 
-  # Features that I have
-  features(after: String, first: Int, before: String, last: Int): FeatureConnection
+# An actual shipment that consists of one or many containers
+type Shipment {
+  id: String
+  containers: [Container]
 
-  # Users's username
-  username: String
+  # Customer who ordered this container
+  customer: Customer
 
-  # User's website
-  website: String
+  # Location of shipment origin
+  origin: Location
+
+  # Location of shipment destination
+  destination: Location
+  route: [RoutePoint]
+}
+
+# A shipment with its route represented by tracking events
+type Shipments {
+  shipments: [Shipment]
 }
