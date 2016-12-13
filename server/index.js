@@ -41,6 +41,6 @@ if (config.env === 'development') {
   const relayServer = express();
   relayServer.use(historyApiFallback());
   relayServer.use('/', express.static(path.join(__dirname, '../build')));
-  relayServer.use('/graphql', graphQLHTTP({ schema }));
+  relayServer.use('/graphql', graphQLHTTP({schema}));
   relayServer.listen(config.port, () => console.log(chalk.green(`Relay is listening on port ${config.port}`)));
 }
