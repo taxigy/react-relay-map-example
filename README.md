@@ -16,6 +16,12 @@ To make it work, you'll need three files placed in the root of this project fold
 
 (format: TBD, but you can guess from the schema)
 
+## Leaflet
+
+The map engine is Leaflet.
+
+Reference to tile layer "Stamen.Watercolor" is generously provided by [Leaflet extras](https://leaflet-extras.github.io/leaflet-providers/preview/).
+
 ## TODO
 
 - [ ] Add the map
