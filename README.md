@@ -1,20 +1,24 @@
 # React + Relay + map example
 
-There's a nice (but heavy) boilerplate out there:
-
-```bash
-git clone https://github.com/lvarayut/relay-fullstack.git
-```
-
-but for this particular example, the code is simplified as much as possible, and all unrelated modules are removed.
-
-To make it work, you'll need three files placed in the root of this project folder:
+To run, put files
 
 - shipments.json,
 - customers.json, and
 - trackingEvents.json
 
-(format: TBD, but you can guess from the schema)
+to the project folder root, do classic
+
+```bash
+npm install; npm start
+```
+
+and then
+
+```bash
+open http://localhost:3000
+```
+
+to see the map with shipment routes.
 
 ## Leaflet
 
@@ -24,6 +28,8 @@ Reference to tile layer "Stamen.Watercolor" is generously provided by [Leaflet e
 
 ## TODO
 
-- [ ] Add the map
-- [ ] Place markers to the map
-- [ ] Paint routes to current location of every shipment
+- [x] Add the map
+- [ ] Place markers to the map where current location of a freight is
+- [x] Draw lines to represent routes
+- [ ] Check if latest point of route is equal to or close to destination (how close?)
+- [ ] Legend with all the customers and shipments, highlight route on hover, a pinch of interactivity.
