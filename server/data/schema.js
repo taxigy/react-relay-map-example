@@ -85,11 +85,11 @@ const routePointType = new GraphQLObjectType({
     },
     latitude: {
       type: GraphQLFloat,
-      resolve: item => item.location.coordinates[0]
+      resolve: item => item.location.coordinates[1]
     },
     longitude: {
       type: GraphQLFloat,
-      resolve: item => item.location.coordinates[1]
+      resolve: item => item.location.coordinates[0]
     }
   })
 });
@@ -115,16 +115,16 @@ const shipmentType = new GraphQLObjectType({
       type: locationType,
       description: 'Location of shipment origin',
       resolve: item => ({
-        latitude: item.origin.location.coordinates[0],
-        longitude: item.origin.location.coordinates[1]
+        latitude: item.origin.location.coordinates[1],
+        longitude: item.origin.location.coordinates[0]
       })
     },
     destination: {
       type: locationType,
       description: 'Location of shipment destination',
       resolve: item => ({
-        latitude: item.destination.location.coordinates[0],
-        longitude: item.destination.location.coordinates[1]
+        latitude: item.destination.location.coordinates[1],
+        longitude: item.destination.location.coordinates[0]
       })
     },
     route: {
